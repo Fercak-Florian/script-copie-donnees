@@ -1,11 +1,11 @@
 # Récupération et affectation des arguments passés en ligne de commande
-param(
-    [string]$disqueSource,
-    [string]$disqueDestination
-)
+# param(
+#     [string]$disqueSource,
+#     [string]$disqueDestination
+# )
 
-Write-Host $disqueSource
-Write-Host $disqueDestination
+# Write-Host $disqueSource
+# Write-Host $disqueDestination
 
 $repertoireTest = "test-34"
 
@@ -21,14 +21,35 @@ $robocopyOptions = @(
     '/mt:16'
     )
 
+function Check-Path {
+    param (
+        $path
+    )
+    if (Test-Path -Path $path) {
+        Write-Host "Le chemin ${path} est accessible"
+        Write-Host Disque source choisi : $disqueSource
+        # Read-Host "Appuyer sur une touche pour continuer"
+    } else {
+        Write-Host "Le chemin ${path} introuvable"
+        # Write-Host Disque destination choisi : $disqueDestination
+        # Read-Host "Appuyer sur une touche pour continuer"
+    }
+}
+
 Clear-Host
-$disqueSource = Read-Host "Veuillez saisir la lettre du disque source en majuscule"
-Write-Host Disque source choisi : $disqueSource
-$disqueDestination = Read-Host "Veuillez saisir la lettre du disque de destination en majuscule"
-Write-Host Disque source choisi : $disqueDestination
-$cuid = Read-Host "Veuillez saisir le CUID en majuscule"
-Write-Host CUID choisi : $cuid
-Write-Host "Vous etes sur le point de lancer la copie des données" 
+
+Write-Host "Veuillez saisir la lettre du disque source en majuscule, par exemple E:"
+$disqueSource = Read-Host
+Check-Path -path $disqueSource
+
+Write-Host "Veuillez saisir la lettre du disque de destination en majuscule, par exemple F:"
+$disqueDestination = Read-Host
+Check-Path -path $disqueDestination
+
+Write-Host "Veuillez saisir le CUID en majuscule, par exemple ABCD1234"
+$cuid = Read-Host
+Write-Host CUID saisi : $cuid
+Write-Host "Vous etes sur le point de lancer la copie des donnees" 
 Read-Host "Appuyer sur un touche pour continuer"
 
 Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
