@@ -38,16 +38,13 @@ function Check-Path {
 
 Clear-Host
 
-Write-Host "Veuillez saisir la lettre du disque source en majuscule, par exemple E:"
-$disqueSource = Read-Host
+$disqueSource = Read-Host "Veuillez saisir la lettre du disque source en majuscule, par exemple E"
 Check-Path -path $disqueSource
 
-Write-Host "Veuillez saisir la lettre du disque de destination en majuscule, par exemple F:"
-$disqueDestination = Read-Host
+$disqueDestination =  Read-Host "Veuillez saisir la lettre du disque de destination en majuscule, par exemple F"
 Check-Path -path $disqueDestination
 
-Write-Host "Veuillez saisir le CUID en majuscule, par exemple ABCD1234"
-$cuid = Read-Host
+$cuid = Read-Host "Veuillez saisir le CUID en majuscule, par exemple ABCD1234"
 Write-Host CUID saisi : $cuid
 Write-Host "Vous etes sur le point de lancer la copie des donnees" 
 Read-Host "Appuyer sur un touche pour continuer"
