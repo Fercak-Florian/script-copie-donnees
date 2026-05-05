@@ -25,23 +25,24 @@ function Check-Path {
     param (
         $path
     )
-    if (Test-Path -Path $path) {
-        Write-Host "Le chemin ${path} est accessible"
-        Write-Host Disque source choisi : $disqueSource
-        # Read-Host "Appuyer sur une touche pour continuer"
-    } else {
-        Write-Host "Le chemin ${path} introuvable"
-        # Write-Host Disque destination choisi : $disqueDestination
-        # Read-Host "Appuyer sur une touche pour continuer"
-    }
+
+    do {
+        $path = Read-Host "Veuillez saisir la lettre du disque en majuscule, par exemple E"
+        $exist = Test-Path -path $path
+        if (-not $exist) {
+            Write-Host "Erreur : le chemin '$path' est inaccessible. Veuillez reessayer." -ForegroundColor Red
+        }
+        
+    } until ($exist<# Condition that stops the loop if it returns true #>)
+    Write-Host "Chemin valide : $path" -ForegroundColor Green
 }
 
 Clear-Host
 
-$disqueSource = Read-Host "Veuillez saisir la lettre du disque source en majuscule, par exemple E"
+# $disqueSource = Read-Host "Veuillez saisir la lettre du disque source en majuscule, par exemple E"
 Check-Path -path $disqueSource
 
-$disqueDestination =  Read-Host "Veuillez saisir la lettre du disque de destination en majuscule, par exemple F"
+# $disqueDestination =  Read-Host "Veuillez saisir la lettre du disque de destination en majuscule, par exemple F"
 Check-Path -path $disqueDestination
 
 $cuid = Read-Host "Veuillez saisir le CUID en majuscule, par exemple ABCD1234"
