@@ -6,6 +6,7 @@
 
 # Write-Host $disqueSource
 # Write-Host $disqueDestination
+Import-Module ./Functions/Read-ValidPath.psm1
 
 $repertoireTest = "test-34"
 
@@ -21,29 +22,13 @@ $robocopyOptions = @(
     '/mt:16'
     )
 
-function Check-Path {
-    param (
-        $path
-    )
-
-    do {
-        $path = Read-Host "Veuillez saisir la lettre du disque en majuscule, par exemple E"
-        $exist = Test-Path -path $path
-        if (-not $exist) {
-            Write-Host "Erreur : le chemin '$path' est inaccessible. Veuillez reessayer." -ForegroundColor Red
-        }
-        
-    } until ($exist<# Condition that stops the loop if it returns true #>)
-    Write-Host "Chemin valide : $path" -ForegroundColor Green
-}
-
 Clear-Host
 
 # $disqueSource = Read-Host "Veuillez saisir la lettre du disque source en majuscule, par exemple E"
-Check-Path -path $disqueSource
+Read-ValidPath
 
 # $disqueDestination =  Read-Host "Veuillez saisir la lettre du disque de destination en majuscule, par exemple F"
-Check-Path -path $disqueDestination
+Read-ValidPath
 
 $cuid = Read-Host "Veuillez saisir le CUID en majuscule, par exemple ABCD1234"
 Write-Host CUID saisi : $cuid
