@@ -90,13 +90,23 @@ foreach ($element in $donneesUtilisateurs)
     }
 }
 
-Write-Host "---- Copie des archives Outlook .pst .ost ----"
+Write-Host "---- Copie des archives Outlook présentes dans Documents (.pst .ost) ----"
 if ($testMode) {
     $source = "${disqueSource}Users\EFFI8230\Documents\Outlook"
     $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\Outlook"
     robocopy $source $destination @robocopyOptions
 } else {
     $source = "${disqueSource}Users\${cuid}\Documents\Outlook"
+    $destination = "${disqueDestination}Users\${cuid}\outlook"
+    robocopy $source $destination @robocopyOptions
+}
+Write-Host "---- Copie des archives Outlook présentes dans Outlook (.pst .ost) ----"
+if ($testMode) {
+    $source = "${disqueSource}Users\EFFI8230\Outlook"
+    $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\Outlook"
+    robocopy $source $destination @robocopyOptions
+} else {
+    $source = "${disqueSource}Users\${cuid}\Outlook"
     $destination = "${disqueDestination}Users\${cuid}\outlook"
     robocopy $source $destination @robocopyOptions
 }
