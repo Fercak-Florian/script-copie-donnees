@@ -58,7 +58,6 @@ Get-ChildItem "${disqueSource}Users\${cuid}\" -Directory -Filter ".*" -Force | F
         Read-Host "Appuyer sur un touche pour continuer"
     } else {
         robocopy "${disqueSource}Users\${cuid}\$($PSItem)" "${disqueDestination}Users\${cuid}\$($PSItem)" @robocopyOptions
-        Read-Host "Appuyer sur un touche pour continuer"
     }
 }
 
