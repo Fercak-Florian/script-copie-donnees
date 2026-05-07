@@ -1,7 +1,7 @@
-Export-ModuleMember -Function Read-ValidPath
 function Read-ValidPath {
     do {
-        $path = Read-Host "Veuillez saisir la lettre du disque en majuscule, par exemple E"
+        $letter = Read-Host "Veuillez saisir la lettre du disque (ex: E:)"
+        $path = "$letter`:\"
         $exist = Test-Path -path $path
         if (-not $exist) {
             Write-Host "Erreur : le chemin '$path' est inaccessible. Veuillez reessayer." -ForegroundColor Red
@@ -11,3 +11,4 @@ function Read-ValidPath {
     Write-Host "Chemin valide : $path" -ForegroundColor Green
     return $path
 }
+Export-ModuleMember -Function Read-ValidPath
