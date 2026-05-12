@@ -41,14 +41,13 @@ Write-Host "Vous etes sur le point de lancer la copie des donnees"
 Read-Host "Appuyer sur un touche pour continuer"
 
 Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
-# if ($testMode) {
-#     robocopy "${disqueSource}Applications" "${disqueDestination}test-robocopy\destination\${repertoireTest}\Applications" @robocopyOptions
-#     robocopy "${disqueSource}My Program Files" "${disqueDestination}test-robocopy\destination\${repertoireTest}\My Program Files" @robocopyOptions
-# } else {
-#     robocopy "${disqueSource}Applications" "${disqueDestination}Applications" @robocopyOptions
-#     robocopy "${disqueSource}My Program Files" "${disqueDestination}My Program Files" @robocopyOptions
-# }
-
+if ($testMode) {
+    robocopy "${disqueSource}Applications" "${disqueDestination}test-robocopy\destination\${repertoireTest}\Applications" @robocopyOptions
+    robocopy "${disqueSource}My Program Files" "${disqueDestination}test-robocopy\destination\${repertoireTest}\My Program Files" @robocopyOptions
+} else {
+    robocopy "${disqueSource}Applications" "${disqueDestination}Applications" @robocopyOptions
+    robocopy "${disqueSource}My Program Files" "${disqueDestination}My Program Files" @robocopyOptions
+}
 
 Write-Host "---- Copie des donnees Utilisateur ----"
 Write-Host "---- Copie des donnees utilisateurs .git .vscode .symfony etc ----"
@@ -82,7 +81,6 @@ foreach ($element in $donneesUtilisateurs)
         $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\$($element)"
         robocopy $source $destination @robocopyOptions
     } else {
-        Write-Host $element
         $source = "${disqueSource}Users\${cuid}\$($element)"
         $destination = "${disqueDestination}Users\${cuid}\$($element)"
         robocopy $source $destination @robocopyOptions
