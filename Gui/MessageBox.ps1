@@ -1,10 +1,10 @@
-# # Appeler Windows Forms
+# Appeler Windows Forms
 Add-Type -AssemblyName System.Windows.Forms
 
 # Formulaire - Création du canva
 $Form = New-Object System.Windows.Forms.Form
 $Form.Text = "Copie de donnees"
-$Form.Width = 1000
+$Form.Width = 800
 $Form.Height = 200
 $Form.AutoSize = $true
 
@@ -63,13 +63,39 @@ Get-ChildItem -Path C:\Users | ForEach-Object {
 $Form.Controls.Add($ComboBoxProfilUtilisateur)
 
 # Creation du boutton OK
-$okButton = New-Object System.Windows.Forms.Button
-$okButton.Location = New-Object System.Drawing.Point(75,120)
-$okButton.Size = New-Object System.Drawing.Size(75,23)
-$okButton.Text = 'OK'
-$okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+$OkButton = New-Object System.Windows.Forms.Button
+$OkButton.Location = New-Object System.Drawing.Point(75,120)
+$OkButton.Size = New-Object System.Drawing.Size(75,23)
+$OkButton.Text = 'OK'
+$OkButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
 $form.AcceptButton = $OKButton
 $form.Controls.Add($OKButton)
+
+# Creation du boutton Annuler
+$CancelButton = New-Object System.Windows.Forms.Button
+$CancelButton.Location = New-Object System.Drawing.Point(175,120)
+$CancelButton.Size = New-Object System.Drawing.Size(75,23)
+$CancelButton.Text = 'Annuler'
+$CancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+$form.CancelButton = $CancelButton
+$form.Controls.Add($CancelButton)
+
+# Evenement lors du click sur le boutton OK
+$OkButton.add_Click(
+    {
+        Write-Host $ComboBoxDisqueSource.SelectedItem
+        Write-Host $ComboBoxDisqueDestination.SelectedItem
+        Write-Host $ComboBoxProfilUtilisateur.SelectedItem
+    }
+)
+
+# Evenement lors du click sur le boutton Annuler
+$CancelButton.add_Click(
+    {
+        # fermeture de la fenêtre
+        $Form.Close()
+    }
+)
 
 # Afficher la GUI
 $Form.ShowDialog()
