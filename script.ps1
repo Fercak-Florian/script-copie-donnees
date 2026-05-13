@@ -11,7 +11,7 @@ Import-Module ./Functions/Read-ValidPath.psm1
 # Write-Host $disqueSource
 # Write-Host $disqueDestination
 
-$repertoireTest = "test-35"
+$repertoireTest = "test-40"
 
 ############################## TEST MODE ##############################
 $testMode =  $true
@@ -42,47 +42,35 @@ Read-Host "Appuyer sur un touche pour continuer"
 
 Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
 if ($testMode) {
-    robocopy "${disqueSource}Applications" "${disqueDestination}test-robocopy\destination\${repertoireTest}\Applications" @robocopyOptions
-    robocopy "${disqueSource}My Program Files" "${disqueDestination}test-robocopy\destination\${repertoireTest}\My Program Files" @robocopyOptions
+    # robocopy "${disqueSource}Applications" "${disqueDestination}test-robocopy\destination\${repertoireTest}\Applications" @robocopyOptions
+    # robocopy "${disqueSource}My Program Files" "${disqueDestination}test-robocopy\destination\${repertoireTest}\My Program Files" @robocopyOptions
 } else {
     robocopy "${disqueSource}Applications" "${disqueDestination}Applications" @robocopyOptions
     robocopy "${disqueSource}My Program Files" "${disqueDestination}My Program Files" @robocopyOptions
 }
 
 Write-Host "---- Copie des donnees Utilisateur ----"
-Write-Host "---- Copie des donnees utilisateurs .git .vscode .symfony etc ----"
-Get-ChildItem "${disqueSource}Users\${cuid}\" -Directory -Filter ".*" -Force | ForEach-Object {
-    if ($testMode) {
-        robocopy "${disqueSource}Users\EFFI8230\$($PSItem)" "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\$($PSItem)" @robocopyOptions
-        Read-Host "Appuyer sur un touche pour continuer"
-    } else {
-        robocopy "${disqueSource}Users\${cuid}\$($PSItem)" "${disqueDestination}Users\${cuid}\$($PSItem)" @robocopyOptions
-    }
-}
 
-$donneesUtilisateurs = @(
-    'Videos',
-    'Downloads',
-    'Searches',
-    'Saved Games',
-    'outlook',
-    'Music',
-    'Links',
-    'Fichiers en local',
-    'Favorites',
-    'Contacts'
-    )
-
-foreach ($element in $donneesUtilisateurs)
-{
-    if ($testMode) {
-        Write-Host $element
-        $source = "${disqueSource}Users\EFFI8230\$($element)"
-        $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\$($element)"
+if ($testMode) {
+    # test mode
+    Get-ChildItem -Path ${disqueSource}Users\${cuid} | Where-Object {
+        $_.Name -notin @("!!!SvgClesZC!!!", "AppData", "Documents") -and
+        $_.Name -notlike "OneDrive*"
+    } | ForEach-Object {
+        # Write-Host $_.Name
+        $source = "${disqueSource}Users\${cuid}\$_"
+        $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\$_"
         robocopy $source $destination @robocopyOptions
-    } else {
-        $source = "${disqueSource}Users\${cuid}\$($element)"
-        $destination = "${disqueDestination}Users\${cuid}\$($element)"
+    }
+} else {
+    # prod mode
+    Get-ChildItem -Path ${disqueSource}Users\${cuid} | Where-Object {
+        $_.Name -notin @("!!!SvgClesZC!!!", "AppData", "Documents") -and
+        $_.Name -notlike "OneDrive*"
+    } | ForEach-Object {
+        # Write-Host $_.Name
+        $source = "${disqueSource}Users\${cuid}\$_"
+        $destination = "${disqueDestination}Users\${cuid}\$_"
         robocopy $source $destination @robocopyOptions
     }
 }
