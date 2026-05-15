@@ -86,6 +86,10 @@ $OkButton.add_Click(
         Write-Host $ComboBoxDisqueSource.SelectedItem
         Write-Host $ComboBoxDisqueDestination.SelectedItem
         Write-Host $ComboBoxProfilUtilisateur.SelectedItem
+        $script:disqueSource = $ComboBoxDisqueSource.SelectedItem
+        $script:disqueDestination = $ComboBoxDisqueDestination.SelectedItem
+        $script:cuid = $ComboBoxProfilUtilisateur.SelectedItem
+        $Form.Close()
     }
 )
 

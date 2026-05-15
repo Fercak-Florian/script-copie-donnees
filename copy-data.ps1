@@ -1,17 +1,24 @@
-Remove-Module *
-Import-Module ./Functions/Read-ValidPath.psm1
-
 # Récupération et affectation des arguments passés en ligne de commande
-# param(
-#     [string]$disqueSource,
-#     [string]$disqueDestination,
-#     [string]$cuid
-# )
+param(
+    [Parameter(Position=0)]
+    [string]$disqueSource,
+    [Parameter(Position=1)]
+    [string]$disqueDestination,
+    [Parameter(Position=2)]
+    [string]$cuid
+)
+# ---------- TO DO ----------
+# Afficher une aide s'il manque un des paramètres #
 
-# Write-Host $disqueSource
-# Write-Host $disqueDestination
+# Remove-Module *
+# Import-Module ./Read-ValidPath.psm1
 
-$repertoireTest = "test-40"
+Write-Host "DANS COPY.PS1" -ForegroundColor Green
+Write-Host "valeur de disqueSource :" $disqueSource
+Write-Host "valeur de disqueDestination :"$disqueDestination
+Write-Host "valeur de cuid :"$cuid
+
+$repertoireTest = "test-43"
 
 ############################## TEST MODE ##############################
 $testMode =  $true
@@ -25,20 +32,23 @@ $robocopyOptions = @(
     '/mt:16'
     )
 
+$disqueSource = "$disqueSource`:\"
+$disqueDestination = "$disqueDestination`:\"
+
 Clear-Host
 
-Write-Host "ETAPE 1 : Choix du disque source"
-$disqueSource = Read-ValidPath
+# Write-Host "ETAPE 1 : Choix du disque source"
+# $disqueSource = Read-ValidPath
 
-Write-Host "ETAPE 2 : Choix du disque de destination"
-$disqueDestination = Read-ValidPath
+# Write-Host "ETAPE 2 : Choix du disque de destination"
+# $disqueDestination = Read-ValidPath
 
-Write-Host "ETAPE 3 : Saisi du CUID utilisateur"
-$cuid = Read-Host "Veuillez saisir le CUID en majuscule, par exemple ABCD1234"
-Write-Host CUID saisi : $cuid
+# Write-Host "ETAPE 3 : Saisi du CUID utilisateur"
+# $cuid = Read-Host "Veuillez saisir le CUID en majuscule, par exemple ABCD1234"
+# Write-Host CUID saisi : $cuid
 
-Write-Host "Vous etes sur le point de lancer la copie des donnees" 
-Read-Host "Appuyer sur un touche pour continuer"
+# Write-Host "Vous etes sur le point de lancer la copie des donnees" 
+# Read-Host "Appuyer sur un touche pour continuer"
 
 Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
 if ($testMode) {
@@ -75,6 +85,8 @@ if ($testMode) {
     }
 }
 
+# ---------- TO DO ----------
+# Ignorer la copie des .ost #
 Write-Host "---- Copie des archives Outlook présentes dans Documents (.pst .ost) ----"
 if ($testMode) {
     $source = "${disqueSource}Users\EFFI8230\Documents\Outlook"
@@ -189,18 +201,46 @@ if ($testMode) {
 }
 
 Write-Host "---- Copie des donnees Microsoft en cache dans AppData\Local\Microsoft\Internet Explorer ----"
+# if ($testMode) {
+#     Get-ChildItem "${disqueSource}Users\EFFI8230\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" | ForEach-Object {
+#             $source = "${disqueSource}Users\EFFI8230\AppData\Local\Microsoft\$($PSItem)"
+#             $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\AppData\Local\Microsoft\$($PSItem)"
+#             robocopy $source $destination @robocopyOptions
+#         }
+#     } else {
+#         Get-ChildItem "${disqueSource}Users\${cuid}\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" | ForEach-Object {
+#             $source = "${disqueSource}Users\${cuid}\AppData\Local\Microsoft\$($PSItem)"
+#             $destination = "${disqueDestination}Users\${cuid}\AppData\Local\Microsoft\$($PSItem)"
+#             robocopy $source $destination @robocopyOptions
+#         }
+#     }
+Write-Host "---- Copie des donnees Microsoft en cache dans AppData\Local\Microsoft\Internet Explorer ----"
+
 if ($testMode) {
-    Get-ChildItem "${disqueSource}Users\EFFI8230\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" | ForEach-Object {
-        $source = "${disqueSource}Users\EFFI8230\AppData\Local\Microsoft\$($PSItem)"
-        $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\AppData\Local\Microsoft\$($PSItem)"
+
+    Get-ChildItem "${disqueSource}Users\EFFI8230\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" |
+    ForEach-Object {
+
+        $source = $_.FullName
+
+        $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\AppData\Local\Microsoft\$($_.Name)"
+
         robocopy $source $destination @robocopyOptions
-    } else {
-        Get-ChildItem "${disqueSource}Users\${cuid}\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" | ForEach-Object {
-            $source = "${disqueSource}Users\${cuid}\AppData\Local\Microsoft\$($PSItem)"
-            $destination = "${disqueDestination}Users\${cuid}\AppData\Local\Microsoft\$($PSItem)"
-            robocopy $source $destination @robocopyOptions
-        }
     }
+
+}
+else {
+
+    Get-ChildItem "${disqueSource}Users\${cuid}\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" |
+    ForEach-Object {
+
+        $source = $_.FullName
+
+        $destination = "${disqueDestination}Users\${cuid}\AppData\Local\Microsoft\$($_.Name)"
+
+        robocopy $source $destination @robocopyOptions
+    }
+
 }
 
 Write-Host "---- Copie des donnees Microsoft en cache dans .\AppData\Local\Microsoft\OneNote ----"
