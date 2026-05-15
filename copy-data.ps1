@@ -18,7 +18,7 @@ Write-Host "valeur de disqueSource :" $disqueSource
 Write-Host "valeur de disqueDestination :"$disqueDestination
 Write-Host "valeur de cuid :"$cuid
 
-$repertoireTest = "test-43"
+$repertoireTest = "test-44"
 
 ############################## TEST MODE ##############################
 $testMode =  $true
@@ -36,6 +36,14 @@ $disqueSource = "$disqueSource`:\"
 $disqueDestination = "$disqueDestination`:\"
 
 Clear-Host
+Write-Host "ATTENTION !!" -ForegroundColor yellow
+Write-Host "Vous etes sur le point de lancer la copie des donnees du disque " -NoNewline
+Write-Host $disqueSource -ForegroundColor green -NoNewline
+Write-Host " vers le disque " -NoNewline
+Write-Host $disqueDestination -ForegroundColor green -NoNewline
+Write-Host " pour l'utilisateur " -NoNewline
+Write-Host $cuid -ForegroundColor green
+Read-Host "Pour continuer appuyer sur Entree"
 
 # Write-Host "ETAPE 1 : Choix du disque source"
 # $disqueSource = Read-ValidPath
