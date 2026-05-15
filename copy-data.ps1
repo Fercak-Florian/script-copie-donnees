@@ -92,7 +92,7 @@ if ($testMode) {
         robocopy $source $destination @robocopyOptions
     }
 }
-Read-Host "stopper"
+
 # ---------- TO DO ----------
 # Ignorer la copie des .ost #
 Write-Host "---- Copie des archives Outlook présentes dans Documents (.pst .ost) ----"
