@@ -18,7 +18,7 @@ Write-Host "valeur de disqueSource :" $disqueSource
 Write-Host "valeur de disqueDestination :"$disqueDestination
 Write-Host "valeur de cuid :"$cuid
 
-$repertoireTest = "test-44"
+$repertoireTest = "test-45"
 
 ############################## TEST MODE ##############################
 $testMode =  $true
@@ -44,6 +44,9 @@ Write-Host $disqueDestination -ForegroundColor green -NoNewline
 Write-Host " pour l'utilisateur " -NoNewline
 Write-Host $cuid -ForegroundColor green
 Read-Host "Pour continuer appuyer sur Entree"
+
+# ---------- TO DO ----------
+# Réfléchir à l'utilisation de la fonction Read-ValidPath
 
 # Write-Host "ETAPE 1 : Choix du disque source"
 # $disqueSource = Read-ValidPath
@@ -93,28 +96,48 @@ if ($testMode) {
     }
 }
 
-# ---------- TO DO ----------
-# Ignorer la copie des .ost #
-Write-Host "---- Copie des archives Outlook présentes dans Documents (.pst .ost) ----"
+Write-Host "---- Copie des archives Outlook presentes dans CUID\Documents\Outlook (.pst) ----"
 if ($testMode) {
-    $source = "${disqueSource}Users\EFFI8230\Documents\Outlook"
-    $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\Outlook"
-    robocopy $source $destination @robocopyOptions
+    Get-ChildItem -Path "${disqueSource}Users\${cuid}\Documents\Outlook" |
+        Where-Object {
+            $_.Extension -ne ".ost"
+        } | ForEach-Object {
+        $source = "${disqueSource}Users\${cuid}\Documents\Outlook"
+        $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\Outlook"
+        robocopy $source $destination $_.Name @robocopyOptions
+    }
 } else {
-    $source = "${disqueSource}Users\${cuid}\Documents\Outlook"
-    $destination = "${disqueDestination}Users\${cuid}\outlook"
-    robocopy $source $destination @robocopyOptions
+        Get-ChildItem -Path "${disqueSource}Users\${cuid}\Documents\Outlook" |
+        Where-Object {
+            $_.Extension -ne ".ost"
+        } | ForEach-Object {
+        $source = "${disqueSource}Users\${cuid}\Documents\Outlook"
+        $destination = "${disqueDestination}Users\${cuid}\Outlook"
+        robocopy $source $destination $_.Name @robocopyOptions
+    }
 }
-Write-Host "---- Copie des archives Outlook présentes dans Outlook (.pst .ost) ----"
+
+Write-Host "---- Copie des archives Outlook presentes dans CUID\Outlook (.pst) ----"
 if ($testMode) {
-    $source = "${disqueSource}Users\EFFI8230\Outlook"
-    $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\Outlook"
-    robocopy $source $destination @robocopyOptions
+    Get-ChildItem -Path "${disqueSource}Users\${cuid}\Outlook" |
+        Where-Object {
+            $_.Extension -ne ".ost"
+        } | ForEach-Object {
+        $source = "${disqueSource}Users\${cuid}\Outlook"
+        $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\Outlook"
+        robocopy $source $destination $_.Name @robocopyOptions
+    }
 } else {
-    $source = "${disqueSource}Users\${cuid}\Outlook"
-    $destination = "${disqueDestination}Users\${cuid}\outlook"
-    robocopy $source $destination @robocopyOptions
+        Get-ChildItem -Path "${disqueSource}Users\${cuid}\Outlook" |
+        Where-Object {
+            $_.Extension -ne ".ost"
+        } | ForEach-Object {
+        $source = "${disqueSource}Users\${cuid}\Outlook"
+        $destination = "${disqueDestination}Users\${cuid}\Outlook"
+        robocopy $source $destination $_.Name @robocopyOptions
+    }
 }
+
 Write-Host "---- Copie du repertoire Documents ----"
 if ($testMode) {
     $source = "${disqueSource}Users\EFFI8230\Documents"
@@ -127,8 +150,10 @@ if ($testMode) {
 }
 
 
-Write-Host "---- Fin de Copie des donnees Utilisateur ----"
-
+Write-Host "---- Fin de Copie des donnees Utilisateur ----" -ForegroundColor green
+if ($testMode) {
+    Read-Host "Pour commencer la copie des donnees en cache appuyer sur Entree"
+}
 
 Write-Host "---- Copie des donnees dans AppData\Roaming\Microsoft ----"
 $data = @(
@@ -191,7 +216,7 @@ ForEach-Object {
     }
 }
 
-# Dans AppData\Local\Microsoft prendre tous les Edge, IE, OneNote, Outlook, tous les Teams
+# Dans AppData\Local\Microsoft copie de tous les repertoires Edge, IE, OneNote, Outlook, Teams
 
 Write-Host "---- Copie des donnees Microsoft en cache dans AppData\Local\Microsoft\Edge ----"
 if ($testMode) {
@@ -209,46 +234,23 @@ if ($testMode) {
 }
 
 Write-Host "---- Copie des donnees Microsoft en cache dans AppData\Local\Microsoft\Internet Explorer ----"
-# if ($testMode) {
-#     Get-ChildItem "${disqueSource}Users\EFFI8230\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" | ForEach-Object {
-#             $source = "${disqueSource}Users\EFFI8230\AppData\Local\Microsoft\$($PSItem)"
-#             $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\AppData\Local\Microsoft\$($PSItem)"
-#             robocopy $source $destination @robocopyOptions
-#         }
-#     } else {
-#         Get-ChildItem "${disqueSource}Users\${cuid}\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" | ForEach-Object {
-#             $source = "${disqueSource}Users\${cuid}\AppData\Local\Microsoft\$($PSItem)"
-#             $destination = "${disqueDestination}Users\${cuid}\AppData\Local\Microsoft\$($PSItem)"
-#             robocopy $source $destination @robocopyOptions
-#         }
-#     }
-Write-Host "---- Copie des donnees Microsoft en cache dans AppData\Local\Microsoft\Internet Explorer ----"
 
 if ($testMode) {
-
     Get-ChildItem "${disqueSource}Users\EFFI8230\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" |
     ForEach-Object {
-
         $source = $_.FullName
-
         $destination = "${disqueDestination}test-robocopy\destination\${repertoireTest}\EFFI8230\AppData\Local\Microsoft\$($_.Name)"
-
         robocopy $source $destination @robocopyOptions
     }
 
 }
 else {
-
     Get-ChildItem "${disqueSource}Users\${cuid}\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" |
     ForEach-Object {
-
         $source = $_.FullName
-
         $destination = "${disqueDestination}Users\${cuid}\AppData\Local\Microsoft\$($_.Name)"
-
         robocopy $source $destination @robocopyOptions
     }
-
 }
 
 Write-Host "---- Copie des donnees Microsoft en cache dans .\AppData\Local\Microsoft\OneNote ----"
