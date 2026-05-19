@@ -195,12 +195,15 @@ if ($testMode) {
 
 
 
-Write-Host "---- Copie de StickyNotes ----"
-# TO DO -> si powerBI copier powerBI
-Get-ChildItem "C:\Users\EFFI8230\AppData\Local\Packages" -Directory |
-Where-Object { $_.Name -like "*StickyNotes*" } |
-ForEach-Object {
+Write-Host "---- Copie de StickyNotes et PowerBI ----"
+$apps = @("*StickyNotes*", "*PowerBI*")
 
+Get-ChildItem "${disqueSource}Users\${cuid}\AppData\Local\Packages" -Directory |
+Where-Object {
+    $name = $_.Name
+    $apps | Where-Object { $name -like $_ }
+} |
+ForEach-Object {
     Write-Host "Trouvé :" $PSItem
     # Read-Host "Appuyez sur Entrée pour continuer"
 
