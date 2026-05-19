@@ -68,7 +68,6 @@ $OkButton.Location = New-Object System.Drawing.Point(75,120)
 $OkButton.Size = New-Object System.Drawing.Size(75,23)
 $OkButton.Text = 'OK'
 $OkButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
-$form.AcceptButton = $OKButton
 $form.Controls.Add($OKButton)
 
 # Creation du boutton Annuler
@@ -77,29 +76,17 @@ $CancelButton.Location = New-Object System.Drawing.Point(175,120)
 $CancelButton.Size = New-Object System.Drawing.Size(75,23)
 $CancelButton.Text = 'Annuler'
 $CancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
-$form.CancelButton = $CancelButton
 $form.Controls.Add($CancelButton)
 
-# Evenement lors du click sur le boutton OK
-$OkButton.add_Click(
-    {
-        Write-Host $ComboBoxDisqueSource.SelectedItem
-        Write-Host $ComboBoxDisqueDestination.SelectedItem
-        Write-Host $ComboBoxProfilUtilisateur.SelectedItem
-        $script:disqueSource = $ComboBoxDisqueSource.SelectedItem
-        $script:disqueDestination = $ComboBoxDisqueDestination.SelectedItem
-        $script:cuid = $ComboBoxProfilUtilisateur.SelectedItem
-        $Form.Close()
-    }
-)
-
-# Evenement lors du click sur le boutton Annuler
-$CancelButton.add_Click(
-    {
-        # fermeture de la fenêtre
-        $Form.Close()
-    }
-)
-
-# Afficher la GUI
-$Form.ShowDialog()
+switch ($Form.ShowDialog()) {
+    'OK'{ 
+            Write-Host $ComboBoxDisqueSource.SelectedItem
+            Write-Host $ComboBoxDisqueDestination.SelectedItem
+            Write-Host $ComboBoxProfilUtilisateur.SelectedItem
+            $script:disqueSource = $ComboBoxDisqueSource.SelectedItem
+            $script:disqueDestination = $ComboBoxDisqueDestination.SelectedItem
+            $script:cuid = $ComboBoxProfilUtilisateur.SelectedItem
+        }
+    'Cancel' { "Annuler clique" }
+    'default' { "Autre action" }
+}
