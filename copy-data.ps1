@@ -18,7 +18,7 @@ Write-Host "valeur de disqueSource :" $disqueSource
 Write-Host "valeur de disqueDestination :"$disqueDestination
 Write-Host "valeur de cuid :"$cuid
 
-$repertoireTest = "test-45"
+$repertoireTest = "test-46"
 
 ############################## TEST MODE ##############################
 $testMode =  $true
