@@ -9,6 +9,18 @@ param(
 )
 # ---------- TO DO ----------
 # Afficher une aide s'il manque un des paramètres #
+if([string]::IsNullOrEmpty($disqueSource) -or [string]::IsNullOrEmpty($disqueDestination) -or [string]::IsNullOrEmpty($cuid)) {
+    # Affichage de l'aide
+    Write-Host "" 
+    Write-Host "----------------------- Aide sur la commande -----------------------------" 
+    Write-Host "Une erreur est survenue lors du lancement de la commande." -ForegroundColor Blue
+    Write-Host "Veuillez resaisir la commande avec les bon parametres."
+    Write-Host "Par exemple copy-data.ps1 <disque source> <disque destination> <prenom utilisateur>"
+    Write-Host "Exemple .\copy-data.ps1 D C john" -ForegroundColor Green
+    Write-Host "" 
+
+    Exit
+}
 
 # Remove-Module *
 # Import-Module ./Read-ValidPath.psm1
