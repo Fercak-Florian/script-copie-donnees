@@ -83,9 +83,14 @@ switch ($Form.ShowDialog()) {
             Write-Host $ComboBoxDisqueSource.SelectedItem
             Write-Host $ComboBoxDisqueDestination.SelectedItem
             Write-Host $ComboBoxProfilUtilisateur.SelectedItem
-            $script:disqueSource = $ComboBoxDisqueSource.SelectedItem
-            $script:disqueDestination = $ComboBoxDisqueDestination.SelectedItem
-            $script:cuid = $ComboBoxProfilUtilisateur.SelectedItem
+            
+            $disqueSource = $ComboBoxDisqueSource.SelectedItem
+            $disqueDestination = $ComboBoxDisqueDestination.SelectedItem
+            $cuid = $ComboBoxProfilUtilisateur.SelectedItem
+            $location = Get-Location | Select-Object -expand Path
+            
+            # Appel du script de copie
+            Invoke-Expression "$location\copy-data.ps1 '$disqueSource' '$disqueDestination' '$cuid'"
         }
     'Cancel' { "Annuler clique" }
     'default' { "Autre action" }

@@ -7,6 +7,7 @@ param(
     [Parameter(Position=2)]
     [string]$cuid
 )
+
 # ---------- TO DO ----------
 # Afficher une aide s'il manque un des paramètres #
 if([string]::IsNullOrEmpty($disqueSource) -or [string]::IsNullOrEmpty($disqueDestination) -or [string]::IsNullOrEmpty($cuid)) {
@@ -75,8 +76,7 @@ Read-Host "Pour continuer appuyer sur Entree"
 
 Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
 if ($testMode) {
-    # robocopy "${disqueSource}Applications" "${disqueDestination}test-robocopy\destination\${repertoireTest}\Applications" @robocopyOptions
-    # robocopy "${disqueSource}My Program Files" "${disqueDestination}test-robocopy\destination\${repertoireTest}\My Program Files" @robocopyOptions
+    # ne rien faire ici
 } else {
     robocopy "${disqueSource}Applications" "${disqueDestination}Applications" @robocopyOptions
     robocopy "${disqueSource}My Program Files" "${disqueDestination}My Program Files" @robocopyOptions
@@ -249,7 +249,6 @@ if ($testMode) {
 }
 
 Write-Host "---- Copie des donnees Microsoft en cache dans AppData\Local\Microsoft\Internet Explorer ----"
-
 if ($testMode) {
     Get-ChildItem "${disqueSource}Users\EFFI8230\AppData\Local\Microsoft" -Directory -Filter "Internet Explorer" |
     ForEach-Object {
