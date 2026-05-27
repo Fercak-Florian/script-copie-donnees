@@ -290,3 +290,5 @@ if ($testMode) {
         robocopy $source $destination @robocopyOptions
     }
 }
+
+Write-Host "La copie des donnees est terminee" -ForegroundColor Green
