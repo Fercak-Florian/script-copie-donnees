@@ -24,7 +24,7 @@ if([string]::IsNullOrEmpty($disqueSource) -or [string]::IsNullOrEmpty($disqueDes
 }
 
 $robocopyOptions = @(
-    '/e',
+    # '/e',
     '/copyall',
     '/w:3',
     '/r:3',
@@ -66,7 +66,7 @@ robocopy "${disqueSource}My Program Files" "${disqueDestination}My Program Files
 
 Write-Host "---- Copie des donnees Utilisateur ----"
 Get-ChildItem -Path ${disqueSource}Users\${cuid} | Where-Object {
-    $_.Name -notin @("!!!SvgClesZC!!!", "AppData", "Documents") -and
+    $_.Name -notin @("!!!SvgClesZC!!!", "AppData", "Documents", "outlook") -and
     $_.Name -notlike "OneDrive*"
     } | ForEach-Object {
     $source = "${disqueSource}Users\${cuid}\$_"
@@ -74,24 +74,24 @@ Get-ChildItem -Path ${disqueSource}Users\${cuid} | Where-Object {
     robocopy $source $destination @robocopyOptions
 }
 
-Write-Host "---- Copie des archives Outlook presentes dans CUID\Documents\Outlook (.pst) ----"
+Write-Host "---- Copie du repertoire Outlook presentes dans CUID\Documents\Outlook ----"
 Get-ChildItem -Path "${disqueSource}Users\${cuid}\Documents\Outlook" |
     Where-Object {
-        $_.Extension -ne ".ost"
+        $_.Name -notlike "*.com.ost" -and $_.Name -notlike "*.ost"
     } | ForEach-Object {
     $source = "${disqueSource}Users\${cuid}\Documents\Outlook"
     $destination = "${disqueDestination}Users\${cuid}\Outlook"
-    robocopy $source $destination $_.Name @robocopyOptions
+    robocopy $source $destination $_.Name
 }
 
-Write-Host "---- Copie des archives Outlook presentes dans CUID\Outlook (.pst) ----"
+Write-Host "---- Copie du repertoire Outlook presentes dans CUID\Outlook ----"
 Get-ChildItem -Path "${disqueSource}Users\${cuid}\Outlook" |
     Where-Object {
-        $_.Extension -ne ".ost"
+        $_.Name -notlike "*.com.ost" -and $_.Name -notlike "*.ost"
     } | ForEach-Object {
     $source = "${disqueSource}Users\${cuid}\Outlook"
     $destination = "${disqueDestination}Users\${cuid}\Outlook"
-    robocopy $source $destination $_.Name @robocopyOptions
+    robocopy $source $destination $_.Name
 }
 
 Write-Host "---- Copie du repertoire Documents ----"
