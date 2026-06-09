@@ -8,20 +8,12 @@ param(
     [string]$cuid
 )
 
-# ---------- TO DO ----------
-# Afficher une aide s'il manque un des paramètres #
-if ([string]::IsNullOrEmpty($disqueSource) -or [string]::IsNullOrEmpty($disqueDestination) -or [string]::IsNullOrEmpty($cuid)) {
-    # Affichage de l'aide
-    Write-Host "" 
-    Write-Host "----------------------- Aide sur la commande -----------------------------" 
-    Write-Host "Une erreur est survenue lors du lancement de la commande." -ForegroundColor Blue
-    Write-Host "Veuillez resaisir la commande avec les bon parametres."
-    Write-Host "Par exemple copy-data.ps1 <disque source> <disque destination> <cuid>"
-    Write-Host "Exemple .\copy-data.ps1 D C ABCD1234" -ForegroundColor Green
-    Write-Host "" 
+Remove-Module *
+Import-Module "$PSScriptRoot\Test-PathExists.psm1"
+Import-Module "$PSScriptRoot\DisplayUser.psm1"
+# Import-Module "$PSScriptRoot\Check-InputParameters.psm1"
+Import-Module "$PSScriptRoot\ConvertTo-DriveRoot.psm1"
 
-    Exit
-}
 
 $robocopyOptions = @(
     # '/e',
@@ -30,35 +22,6 @@ $robocopyOptions = @(
     '/r:3',
     '/mt:16'
 )
-
-$disqueSource = "$disqueSource`:\"
-$disqueDestination = "$disqueDestination`:\"
-
-Clear-Host
-Write-Host "ATTENTION !!" -ForegroundColor yellow
-Write-Host "Vous etes sur le point de lancer la copie des donnees du disque " -NoNewline
-Write-Host $disqueSource -ForegroundColor green -NoNewline
-Write-Host " vers le disque " -NoNewline
-Write-Host $disqueDestination -ForegroundColor green -NoNewline
-Write-Host " pour l'utilisateur " -NoNewline
-Write-Host $cuid -ForegroundColor green
-Read-Host "Pour continuer appuyer sur Entree"
-
-# ---------- TO DO ----------
-# Réfléchir à l'utilisation de la fonction Read-ValidPath
-
-# Write-Host "ETAPE 1 : Choix du disque source"
-# $disqueSource = Read-ValidPath
-
-# Write-Host "ETAPE 2 : Choix du disque de destination"
-# $disqueDestination = Read-ValidPath
-
-# Write-Host "ETAPE 3 : Saisi du CUID utilisateur"
-# $cuid = Read-Host "Veuillez saisir le CUID en majuscule, par exemple ABCD1234"
-# Write-Host CUID saisi : $cuid
-
-# Write-Host "Vous etes sur le point de lancer la copie des donnees" 
-# Read-Host "Appuyer sur un touche pour continuer"
 
 function Copy-User-Data {
     param (
@@ -185,11 +148,38 @@ function Copy-App-Data {
     Write-Host "---- Fin de la copie des donnees des applications ----" -ForegroundColor green
 }
 
-Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
-robocopy "${disqueSource}Applications" "${disqueDestination}Applications" @robocopyOptions
-robocopy "${disqueSource}My Program Files" "${disqueDestination}My Program Files" @robocopyOptions
+# Etape 1 : Vérifier les paramètres entrants
+if ([string]::IsNullOrEmpty($disqueSource) -or [string]::IsNullOrEmpty($disqueDestination) -or [string]::IsNullOrEmpty($cuid)) {
+    DisplayUserHelp
+}
 
-Copy-User-Data $disqueSource $disqueDestination $cuid
-Copy-App-Data $disqueSource $disqueDestination $cuid
+# Etape 2 : Convertir les lettre du lecteur en chemin d'acces
+$sourceDisk = ConvertTo-DriveRoot $disqueSource
+$targetDisk = ConvertTo-DriveRoot $disqueDestination
 
-Write-Host "La copie des donnees est terminee" -ForegroundColor Green
+# Etape 3 : Tester que les chemins source et destination sont accessibles
+if ((Test-PathExists $sourceDisk) -and (Test-PathExists $targetDisk)) {
+    # Etape 4 : Alerter avant la copie
+    DisplayUserAlert $sourceDisk $targetDisk $cuid
+    
+    # Etape 5 : Lancer la copie
+    Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
+    robocopy "${sourceDisk}Applications" "${targetDisk}Applications" @robocopyOptions
+    robocopy "${sourceDisk}My Program Files" "${targetDisk}My Program Files" @robocopyOptions
+
+    Copy-User-Data $sourceDisk $targetDisk $cuid
+    Copy-App-Data $sourceDisk $targetDisk $cuid
+
+    Write-Host "La copie des donnees est terminee" -ForegroundColor Green
+}
+else {
+    Write-Host "something goes wrong"
+}
+
+function main {
+    # Etape 1 : Vérifier les paramètres entrants
+    # Etape 2 : Convertir les lettre du lecteur en chemin d'acces
+    # Etape 3 : Tester que les chemins source et destination sont accessibles
+    # Etape 4 : Alerter avant la copie
+    # Etape 5 : Lancer la copie
+}
