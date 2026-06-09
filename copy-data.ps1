@@ -11,7 +11,7 @@ param(
 Remove-Module *
 Import-Module "$PSScriptRoot\Test-PathExists.psm1"
 Import-Module "$PSScriptRoot\DisplayUser.psm1"
-# Import-Module "$PSScriptRoot\Check-InputParameters.psm1"
+Import-Module "$PSScriptRoot\Test-InputParameters.psm1"
 Import-Module "$PSScriptRoot\ConvertTo-DriveRoot.psm1"
 
 
@@ -148,38 +148,29 @@ function Copy-App-Data {
     Write-Host "---- Fin de la copie des donnees des applications ----" -ForegroundColor green
 }
 
-# Etape 1 : Vérifier les paramètres entrants
-if ([string]::IsNullOrEmpty($disqueSource) -or [string]::IsNullOrEmpty($disqueDestination) -or [string]::IsNullOrEmpty($cuid)) {
-    DisplayUserHelp
-}
-
-# Etape 2 : Convertir les lettre du lecteur en chemin d'acces
-$sourceDisk = ConvertTo-DriveRoot $disqueSource
-$targetDisk = ConvertTo-DriveRoot $disqueDestination
-
-# Etape 3 : Tester que les chemins source et destination sont accessibles
-if ((Test-PathExists $sourceDisk) -and (Test-PathExists $targetDisk)) {
+function main {
+    param(
+        [string] $sourceLetter,
+        [string] $targetLetter,
+        [string] $cuid
+    )
+    # Read-Host "stop"
+    # Etape 1 : Vérifier les paramètres entrants
+    Test-InputParameters $disqueSource $disqueDestination $cuid
+    # Etape 2 : Convertir les lettre du lecteur en chemin d'acces
+    $sourceDisk = ConvertTo-DriveRoot $sourceLetter
+    $targetDisk = ConvertTo-DriveRoot $targetLetter
+    # Etape 3 : Tester que les chemins source et destination sont accessibles
+    Test-SourceAndTargetPath $sourceDisk $targetDisk
     # Etape 4 : Alerter avant la copie
     DisplayUserAlert $sourceDisk $targetDisk $cuid
-    
     # Etape 5 : Lancer la copie
     Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
     robocopy "${sourceDisk}Applications" "${targetDisk}Applications" @robocopyOptions
     robocopy "${sourceDisk}My Program Files" "${targetDisk}My Program Files" @robocopyOptions
-
     Copy-User-Data $sourceDisk $targetDisk $cuid
     Copy-App-Data $sourceDisk $targetDisk $cuid
-
     Write-Host "La copie des donnees est terminee" -ForegroundColor Green
 }
-else {
-    Write-Host "something goes wrong"
-}
 
-function main {
-    # Etape 1 : Vérifier les paramètres entrants
-    # Etape 2 : Convertir les lettre du lecteur en chemin d'acces
-    # Etape 3 : Tester que les chemins source et destination sont accessibles
-    # Etape 4 : Alerter avant la copie
-    # Etape 5 : Lancer la copie
-}
+main $disqueSource $disqueDestination $cuid
