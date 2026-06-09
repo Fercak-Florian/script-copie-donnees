@@ -13,6 +13,7 @@ Import-Module "$PSScriptRoot\Test-PathExists.psm1"
 Import-Module "$PSScriptRoot\DisplayUser.psm1"
 Import-Module "$PSScriptRoot\Test-InputParameters.psm1"
 Import-Module "$PSScriptRoot\ConvertTo-DriveRoot.psm1"
+Import-Module "$PSScriptRoot\Copy-UserData.psm1"
 
 
 $robocopyOptions = @(
@@ -23,52 +24,52 @@ $robocopyOptions = @(
     '/mt:16'
 )
 
-function Copy-User-Data {
-    param (
-        [Parameter(Position = 0)]
-        [string]$disqueSource,
-        [Parameter(Position = 1)]
-        [string]$disqueDestination,
-        [Parameter(Position = 2)]
-        [string]$cuid
-    )
-    Write-Host "---- Debut de la copie des donnees Utilisateur ----" -ForegroundColor green
-    Get-ChildItem -Path ${disqueSource}Users\${cuid} | Where-Object {
-        $_.Name -notin @("!!!SvgClesZC!!!", "AppData", "Documents", "outlook") -and
-        $_.Name -notlike "OneDrive*"
-    } | ForEach-Object {
-        $source = "${disqueSource}Users\${cuid}\$_"
-        $destination = "${disqueDestination}Users\${cuid}\$_"
-        robocopy $source $destination @robocopyOptions
-    }
+# function Copy-User-Data {
+#     param (
+#         [Parameter(Position = 0)]
+#         [string]$disqueSource,
+#         [Parameter(Position = 1)]
+#         [string]$disqueDestination,
+#         [Parameter(Position = 2)]
+#         [string]$cuid
+#     )
+#     Write-Host "---- Debut de la copie des donnees Utilisateur ----" -ForegroundColor green
+#     Get-ChildItem -Path ${disqueSource}Users\${cuid} | Where-Object {
+#         $_.Name -notin @("!!!SvgClesZC!!!", "AppData", "Documents", "outlook") -and
+#         $_.Name -notlike "OneDrive*"
+#     } | ForEach-Object {
+#         $source = "${disqueSource}Users\${cuid}\$_"
+#         $destination = "${disqueDestination}Users\${cuid}\$_"
+#         robocopy $source $destination @robocopyOptions
+#     }
 
-    Write-Host "---- Copie du repertoire Outlook presentes dans CUID\Documents\Outlook ----"
-    Get-ChildItem -Path "${disqueSource}Users\${cuid}\Documents\Outlook" |
-    Where-Object {
-        $_.Name -notlike "*.com.ost" -and $_.Name -notlike "*.ost"
-    } | ForEach-Object {
-        $source = "${disqueSource}Users\${cuid}\Documents\Outlook"
-        $destination = "${disqueDestination}Users\${cuid}\Outlook"
-        robocopy $source $destination $_.Name
-    }
+#     Write-Host "---- Copie du repertoire Outlook presentes dans CUID\Documents\Outlook ----"
+#     Get-ChildItem -Path "${disqueSource}Users\${cuid}\Documents\Outlook" |
+#     Where-Object {
+#         $_.Name -notlike "*.com.ost" -and $_.Name -notlike "*.ost"
+#     } | ForEach-Object {
+#         $source = "${disqueSource}Users\${cuid}\Documents\Outlook"
+#         $destination = "${disqueDestination}Users\${cuid}\Outlook"
+#         robocopy $source $destination $_.Name
+#     }
 
-    Write-Host "---- Copie du repertoire Outlook presentes dans CUID\Outlook ----"
-    Get-ChildItem -Path "${disqueSource}Users\${cuid}\Outlook" |
-    Where-Object {
-        $_.Name -notlike "*.com.ost" -and $_.Name -notlike "*.ost"
-    } | ForEach-Object {
-        $source = "${disqueSource}Users\${cuid}\Outlook"
-        $destination = "${disqueDestination}Users\${cuid}\Outlook"
-        robocopy $source $destination $_.Name
-    }
+#     Write-Host "---- Copie du repertoire Outlook presentes dans CUID\Outlook ----"
+#     Get-ChildItem -Path "${disqueSource}Users\${cuid}\Outlook" |
+#     Where-Object {
+#         $_.Name -notlike "*.com.ost" -and $_.Name -notlike "*.ost"
+#     } | ForEach-Object {
+#         $source = "${disqueSource}Users\${cuid}\Outlook"
+#         $destination = "${disqueDestination}Users\${cuid}\Outlook"
+#         robocopy $source $destination $_.Name
+#     }
 
-    Write-Host "---- Copie du repertoire Documents ----"
-    $source = "${disqueSource}Users\${cuid}\Documents"
-    $destination = "${disqueDestination}Users\${cuid}\Documents"
-    robocopy $source $destination /xd Outlook @robocopyOptions
+#     Write-Host "---- Copie du repertoire Documents ----"
+#     $source = "${disqueSource}Users\${cuid}\Documents"
+#     $destination = "${disqueDestination}Users\${cuid}\Documents"
+#     robocopy $source $destination /xd Outlook @robocopyOptions
 
-    Write-Host "---- Fin de Copie des donnees Utilisateur ----" -ForegroundColor green
-}
+#     Write-Host "---- Fin de Copie des donnees Utilisateur ----" -ForegroundColor green
+# }
 
 function Copy-App-Data {
     param (
@@ -168,7 +169,7 @@ function main {
     Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
     robocopy "${sourceDisk}Applications" "${targetDisk}Applications" @robocopyOptions
     robocopy "${sourceDisk}My Program Files" "${targetDisk}My Program Files" @robocopyOptions
-    Copy-User-Data $sourceDisk $targetDisk $cuid
+    Copy-UserData $sourceDisk $targetDisk $cuid
     Copy-App-Data $sourceDisk $targetDisk $cuid
     Write-Host "La copie des donnees est terminee" -ForegroundColor Green
 }
