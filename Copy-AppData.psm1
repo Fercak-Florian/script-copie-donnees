@@ -5,7 +5,9 @@ function Copy-AppData {
         [Parameter(Position = 1)]
         [string]$disqueDestination,
         [Parameter(Position = 2)]
-        [string]$cuid
+        [string]$cuid,
+        [Parameter(Position = 3)]
+        [array]$robocopyOptions 
     )
     Write-Host "---- Debut de la copie des donnees des applications ----" -ForegroundColor Yellow
 
