@@ -9,10 +9,10 @@ param(
 )
 
 Remove-Module *
-Import-Module "$PSScriptRoot\Test-PathExists.psm1"
+Import-Module "$PSScriptRoot\Utils\Test-PathExists.psm1"
 Import-Module "$PSScriptRoot\DisplayUser.psm1"
-Import-Module "$PSScriptRoot\Test-InputParameters.psm1"
-Import-Module "$PSScriptRoot\ConvertTo-DriveRoot.psm1"
+Import-Module "$PSScriptRoot\Utils\Test-InputParameters.psm1"
+Import-Module "$PSScriptRoot\Utils\ConvertTo-DriveRoot.psm1"
 Import-Module "$PSScriptRoot\Copy-UserData.psm1"
 Import-Module "$PSScriptRoot\Copy-AppData.psm1"
 
@@ -44,8 +44,8 @@ function main {
     Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
     # robocopy "${sourceDisk}Applications" "${targetDisk}Applications" @robocopyOptions
     # robocopy "${sourceDisk}My Program Files" "${targetDisk}My Program Files" @robocopyOptions
-    # Copy-UserData $sourceDisk $targetDisk $cuid
-    # Copy-AppData $sourceDisk $targetDisk $cuid
+    Copy-UserData $sourceDisk $targetDisk $cuid
+    Copy-AppData $sourceDisk $targetDisk $cuid
     Write-Host "La copie des donnees est terminee" -ForegroundColor Green
 
     # Appel du script d'ajout de l'imprimante lexmark

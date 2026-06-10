@@ -1,4 +1,4 @@
-Import-Module "$PSScriptRoot\DisplayUser.psm1"
+Import-Module "$PSScriptRoot\..\DisplayUser.psm1"
 
 function Test-InputParameters {
     param (
