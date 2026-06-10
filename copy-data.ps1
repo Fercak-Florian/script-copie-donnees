@@ -44,9 +44,14 @@ function main {
     Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
     # robocopy "${sourceDisk}Applications" "${targetDisk}Applications" @robocopyOptions
     # robocopy "${sourceDisk}My Program Files" "${targetDisk}My Program Files" @robocopyOptions
-    Copy-UserData $sourceDisk $targetDisk $cuid
-    Copy-AppData $sourceDisk $targetDisk $cuid
+    # Copy-UserData $sourceDisk $targetDisk $cuid
+    # Copy-AppData $sourceDisk $targetDisk $cuid
     Write-Host "La copie des donnees est terminee" -ForegroundColor Green
+
+    # Appel du script d'ajout de l'imprimante lexmark
+    Write-Host "Pour installer l'imprimante Lexmark et l'ajouter par defaut appuyer sur une touche :" -ForegroundColor Yellow
+    $location = Get-Location | Select-Object -expand Path
+    Invoke-Expression "$location\add-lexmark-printer.ps1"
 }
 
 main $disqueSource $disqueDestination $cuid
