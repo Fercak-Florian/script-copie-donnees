@@ -5,7 +5,9 @@ function Copy-UserData {
         [Parameter(Position = 1)]
         [string]$disqueDestination,
         [Parameter(Position = 2)]
-        [string]$cuid
+        [string]$cuid,
+        [Parameter(Position = 3)]
+        [array]$robocopyOptions 
     )
     Write-Host "---- Debut de la copie des donnees Utilisateur ----" -ForegroundColor green
     Get-ChildItem -Path ${disqueSource}Users\${cuid} | Where-Object {

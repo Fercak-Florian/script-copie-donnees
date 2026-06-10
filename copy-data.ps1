@@ -17,7 +17,7 @@ Import-Module "$PSScriptRoot\Copy-UserData.psm1"
 Import-Module "$PSScriptRoot\Copy-AppData.psm1"
 
 $robocopyOptions = @(
-    # '/e',
+    '/e',
     '/copyall',
     '/w:3',
     '/r:3',
@@ -28,7 +28,8 @@ function main {
     param(
         [string] $sourceLetter,
         [string] $targetLetter,
-        [string] $cuid
+        [string] $cuid,
+        [array]  $robocopyOptions
     )
     # Read-Host "stop"
     # Etape 1 : Vérifier les paramètres entrants
@@ -44,8 +45,8 @@ function main {
     Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
     # robocopy "${sourceDisk}Applications" "${targetDisk}Applications" @robocopyOptions
     # robocopy "${sourceDisk}My Program Files" "${targetDisk}My Program Files" @robocopyOptions
-    Copy-UserData $sourceDisk $targetDisk $cuid
-    Copy-AppData $sourceDisk $targetDisk $cuid
+    Copy-UserData $sourceDisk $targetDisk $cuid $robocopyOptions
+    Copy-AppData $sourceDisk $targetDisk $cuid $robocopyOptions
     Write-Host "La copie des donnees est terminee" -ForegroundColor Green
 
     # Appel du script d'ajout de l'imprimante lexmark
