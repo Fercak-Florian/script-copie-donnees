@@ -15,6 +15,7 @@ Import-Module "$PSScriptRoot\Utils\Test-InputParameters.psm1"
 Import-Module "$PSScriptRoot\Utils\ConvertTo-DriveRoot.psm1"
 Import-Module "$PSScriptRoot\Copy-UserData.psm1"
 Import-Module "$PSScriptRoot\Copy-AppData.psm1"
+Import-Module "$PSScriptRoot\Utils\Test-CuidPresenceDirectory.psm1"
 
 $robocopyOptions = @(
     '/e',
@@ -31,7 +32,6 @@ function main {
         [string] $cuid,
         [string[]]  $robocopyOptions
     )
-    # Read-Host "stop"
     # Etape 1 : Vérifier les paramètres entrants
     Test-InputParameters $disqueSource $disqueDestination $cuid
     # Etape 2 : Convertir les lettre du lecteur en chemin d'acces
@@ -39,9 +39,11 @@ function main {
     $targetDisk = ConvertTo-DriveRoot $targetLetter
     # Etape 3 : Tester que les chemins source et destination sont accessibles
     Test-SourceAndTargetPath $sourceDisk $targetDisk
-    # Etape 4 : Alerter avant la copie
+    # Etape 4 : Tester la presence du repertoire cuid
+    Test-CuidPresenceDirectory $cuid $sourceDisk
+    # Etape 5 : Alerter avant la copie
     DisplayUserAlert $sourceDisk $targetDisk $cuid
-    # Etape 5 : Lancer la copie
+    # Etape 6 : Lancer la copie
     Write-Host "---- Copie de C:\Applications et C:\My Program Files ----"
     robocopy "${sourceDisk}Applications" "${targetDisk}Applications" @robocopyOptions
     robocopy "${sourceDisk}My Program Files" "${targetDisk}My Program Files" @robocopyOptions
