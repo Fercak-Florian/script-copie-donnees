@@ -8,6 +8,5 @@ function Test-CuidPresenceDirectory {
         Write-Host "Le CUID ${cuid} est introuvable dans le disque ${disk}" -ForegroundColor DarkRed
         Exit
     }
-    Read-Host "stop"
 }
 Export-ModuleMember -Function *
