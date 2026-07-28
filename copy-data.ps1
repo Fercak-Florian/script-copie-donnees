@@ -48,7 +48,7 @@ function main {
     robocopy "${sourceDisk}Applications" "${targetDisk}Applications" @robocopyOptions
     robocopy "${sourceDisk}My Program Files" "${targetDisk}My Program Files" @robocopyOptions
     Copy-UserData $sourceDisk $targetDisk $cuid $robocopyOptions
-    Copy-AppData $sourceDisk $targetDisk $cuid $robocopyOptions
+    # Copy-AppData $sourceDisk $targetDisk $cuid $robocopyOptions
     Write-Host "La copie des donnees est terminee" -ForegroundColor Green
 
     # Appel du script d'ajout de l'imprimante lexmark
